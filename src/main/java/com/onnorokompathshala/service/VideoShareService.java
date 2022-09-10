@@ -60,8 +60,8 @@ public class VideoShareService {
         videoShareRepository.count(videoId);
     }
 
-    public Long findTotalWatchingTime(Long videoId) {
-        return videoShareRepository.findByTotView(videoId);
+    public Integer findTotalWatchingTime(Integer videoId) {
+        return videoShareRepository.findTotView(videoId);
     }
 
     public Optional<VideoShare> findVideoById(Long id) {

@@ -17,12 +17,12 @@ public class HomePageController {
         this.videoShareService = videoShareService;
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/getAllVideos")
     public List<VideoShare> getAll() {
         return videoShareService.findAll();
     }
 
-    @PutMapping("/updateVideoWatchCount/{videoId}")
+    @PutMapping("/videoWatchCount/{videoId}")
     public void updateVideoWatch(@PathVariable("videoId") Long videoId) {
         videoShareService.updateCount(videoId);
     }

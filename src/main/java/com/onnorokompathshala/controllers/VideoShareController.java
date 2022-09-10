@@ -1,5 +1,6 @@
 package com.onnorokompathshala.controllers;
 
+import com.onnorokompathshala.Dto.DetailsResponseDTO;
 import com.onnorokompathshala.entities.VideoReaction;
 import com.onnorokompathshala.entities.VideoShare;
 import com.onnorokompathshala.service.VideoReactionService;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -25,34 +27,35 @@ public class VideoShareController {
 
 
     @PostMapping("/saveVideo")
-    public ResponseEntity<?> saveVideo(@RequestParam("file") MultipartFile multipartFile, @RequestParam String uploaderId) throws Exception {
-
-        return videoShareService.saveVideoShare(multipartFile, uploaderId);
+    public ResponseEntity<?> saveVideo(@RequestParam("file") MultipartFile file, Principal principal) throws Exception {
+        String userEmail = principal.getName();
+        return videoShareService.saveVideoShare(file, userEmail);
     }
-
-    @GetMapping("/getAll")
+    @GetMapping("/getAllVideos")
     public List<VideoShare> getAll() {
         return videoShareService.findAll();
     }
 
-    @GetMapping("/findVideoBy/{upLoaderId}")
-    List<VideoShare> findVideoByUploaderId(@PathVariable("upLoaderId") String upLoaderId) {
-        return videoShareService.findVideoByFkUserID(upLoaderId);
+
+    @GetMapping("/findVideoByUpLoaderId")
+    List<VideoShare> findVideoByUploaderId(Principal principal) {
+        String userEmail=principal.getName();
+        return videoShareService.findVideoByFkUserID(userEmail);
     }
 
-    @PutMapping("/updateVideoWatch/{videoId}")
+    @PutMapping("/videoWatch/{videoId}")
     public void updateVideoWatch(@PathVariable("videoId") Long videoId) {
         videoShareService.updateCount(videoId);
     }
 
     @GetMapping("/getTotalVideoWatchingCount/{videoId}")
-    public Long getTotalCount(@PathVariable("videoId") Long videoId) {
+    public Integer getTotalCount(@PathVariable("videoId") Integer videoId) {
         return videoShareService.findTotalWatchingTime(videoId);
     }
 
-    @PostMapping("/reaction/{reactionType}/{reactionBy}/{videoId}")
-    public ResponseEntity<?> reaction(@PathVariable Long reactionType, @PathVariable Long reactionBy, @PathVariable Long videoId) {
-        return videoReactionService.videoReaction(reactionType, reactionBy, videoId);
+    @PostMapping("/reaction")
+    public ResponseEntity<?> reaction(@RequestBody VideoReaction videoReact) {
+        return videoReactionService.videoReaction(videoReact);
     }
 
     @GetMapping("/findReactionVideoBy/{reactionType}")
@@ -60,9 +63,14 @@ public class VideoShareController {
         return videoReactionService.findReactionBy(reactionType);
     }
 
-    @GetMapping("/findTotalReactionBy/{reactionType}")
-    public long findTotalReaction(@PathVariable("reactionType") Reaction reactionType){
-        return videoReactionService.findTotalVideoReactionByReactionType(reactionType);
+    @GetMapping("/findTotalReactionBy/{reactionType}/{videoId}")
+    public long findTotalReaction(@PathVariable("reactionType") Reaction reactionType, @PathVariable("videoId") Long videoId) {
+        return videoReactionService.findTotalVideoReactionByReactionType(reactionType, videoId);
+    }
+
+    @GetMapping("/findVideoDetailsBy/{videoId}")
+    public List<DetailsResponseDTO> getVideoDetails(@PathVariable("videoId")Long videoId ){
+        return videoReactionService.getVideoDetails(videoId);
     }
 
 }

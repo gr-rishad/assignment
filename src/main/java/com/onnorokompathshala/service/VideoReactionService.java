@@ -1,5 +1,6 @@
 package com.onnorokompathshala.service;
 
+import com.onnorokompathshala.Dto.DetailsResponseDTO;
 import com.onnorokompathshala.entities.User;
 import com.onnorokompathshala.entities.VideoReaction;
 import com.onnorokompathshala.entities.VideoShare;
@@ -27,38 +28,25 @@ public class VideoReactionService {
     }
 
 
-    public ResponseEntity<?> videoReaction(Long reactionType, Long reactionBy, Long videoId) {
+    public ResponseEntity<?> videoReaction(VideoReaction videoReact) {
+
         VideoReaction reaction = new VideoReaction();
-        VideoShare videoShare = videoShareRepository.findVideoShareById(videoId).get();
-        User user = userService.findByUserId(reactionBy).get();
-        if (!reactionType.equals(null)) {
-            Optional<VideoReaction> videoReaction = videoReactionRepository.findById(videoId);
-            if(videoReaction.isPresent()){
-                if (videoReaction.get().getReactions().equals("LIKE")) {
-                    reaction.setReactions(Reaction.UNLIKE);
-                } else {
-                    reaction.setReactions(Reaction.LIKE);
-                }
-            }else {
-                if (videoReaction.get().getReactions().equals("LIKE")) {
-                    reaction.setReactions(Reaction.LIKE);
-                } else {
-                    reaction.setReactions(Reaction.UNLIKE);
-                }
+
+        if (videoReact != null) {
+            VideoReaction videoReaction = videoReactionRepository.findByReactByAndVideoId(videoReact.getReactBy(), videoReact.getVideoId());
+            if (videoReaction != null) {
+                videoReaction.setReactions(videoReact.getReactions());
+                videoReaction.setReactionTime(LocalDateTime.now());
+                videoReactionRepository.save(videoReaction);
+            } else {
+                reaction.setReactionTime(LocalDateTime.now());
+                reaction.setReactBy(videoReact.getReactBy());
+                reaction.setVideoId(videoReact.getVideoId());
+
+                reaction.setReactions(videoReact.getReactions());
+                videoReactionRepository.save(reaction);
             }
-
-//            if (videoReaction.getReactions().equals("LIKE")) {
-//                reaction.setReactions(Reaction.UNLIKE);
-//            } else {
-//                reaction.setReactions(Reaction.LIKE);
-//            }
         }
-
-        reaction.setReactionTime(LocalDateTime.now());
-        reaction.setReactionsBy(user);
-        reaction.setVideoId(videoShare);
-        videoReactionRepository.save(reaction);
-
         return ResponseEntity.ok("Reaction Saved");
     }
 
@@ -66,7 +54,11 @@ public class VideoReactionService {
         return videoReactionRepository.findByReactions(type);
     }
 
-    public long findTotalVideoReactionByReactionType(Reaction reactionType) {
-        return videoReactionRepository.findTotalVideoReaction(reactionType);
+    public Integer findTotalVideoReactionByReactionType(Reaction reactionType, Long videoId) {
+        return videoReactionRepository.findTotalVideoReaction(reactionType, videoId);
+    }
+
+    public List<DetailsResponseDTO> getVideoDetails(Long videoId){
+        return videoReactionRepository.getVideoDetails(videoId);
     }
 }

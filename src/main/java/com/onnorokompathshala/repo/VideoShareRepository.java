@@ -16,7 +16,8 @@ public interface VideoShareRepository extends JpaRepository<VideoShare, Long> {
 
     Optional<VideoShare> findVideoShareById(Long id);
 
-    long findByTotView(Long videoId);
+    @Query(value = "SELECT v.tot_view as totalView FROM video_share v WHERE v.id=:videoId", nativeQuery = true)
+    Integer findTotView(Integer videoId);
 
     @Transactional
     @Modifying

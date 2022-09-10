@@ -20,11 +20,7 @@ public class VideoReaction {
     private Long id;
     @Enumerated(EnumType.STRING)
     private Reaction reactions;
-    @OneToOne
-    @JoinColumn(name = "video_id")
-    private VideoShare videoId;
-    @OneToOne
-    @JoinColumn(name = "reactions_by")
-    private User reactionsBy;
+    private Long videoId;
+    private String reactBy;
     private LocalDateTime reactionTime;
 }

@@ -54,7 +54,7 @@ public class UserService {
 
         // create user object
         User user = new User();
-        user.setName(signupDTO.getName());
+        user.setUserName(signupDTO.getName());
         user.setEmail(signupDTO.getEmail());
         user.setPassword(passwordEncoder.encode(signupDTO.getPassword()));
 
