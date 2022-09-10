@@ -69,7 +69,7 @@ public class VideoShareController {
     }
 
     @GetMapping("/findVideoDetailsBy/{videoId}")
-    public List<DetailsResponseDTO> getVideoDetails(@PathVariable("videoId")Long videoId ){
+    public DetailsResponseDTO getVideoDetails(@PathVariable("videoId")Long videoId ){
         return videoReactionService.getVideoDetails(videoId);
     }
 

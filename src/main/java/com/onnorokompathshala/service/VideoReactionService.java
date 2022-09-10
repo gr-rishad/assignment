@@ -58,7 +58,7 @@ public class VideoReactionService {
         return videoReactionRepository.findTotalVideoReaction(reactionType, videoId);
     }
 
-    public List<DetailsResponseDTO> getVideoDetails(Long videoId){
+    public DetailsResponseDTO getVideoDetails(Long videoId){
         return videoReactionRepository.getVideoDetails(videoId);
     }
 }

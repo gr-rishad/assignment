@@ -27,5 +27,5 @@ public interface VideoReactionRepository extends JpaRepository<VideoReaction,Lon
             "group by reactions,video_id) b\n" +
             "where a.id = b.video_id\n" +
             "group by  id",nativeQuery = true)
-    List<DetailsResponseDTO> getVideoDetails(@Param("videoId") Long videoId);
+    DetailsResponseDTO getVideoDetails(@Param("videoId") Long videoId);
 }
